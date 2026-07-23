@@ -397,7 +397,7 @@ function render(){
     if(!k.posted) state=`<span class="badge">รอโพสต์${k.postDate?' · '+k.postDate:''}</span>`;
     else if(k.views===0) state=`<span class="badge">รอซิงค์รอบแรก</span>`;
     const viewsBlock = k.posted && k.views>0
-      ? `<div class="views mono">${fmt(k.views)}</div><div class="views-l">${ICONS.eye} ยอดวิว · ER ${erOf(k).toFixed(2)}%</div>`
+      ? `<div class="views mono">${fmt(k.views)}</div><div class="views-l">ยอดวิว · ER ${erOf(k).toFixed(2)}%</div>`
       : `<div class="views mono" style="color:var(--muted-2)">${k.posted?'—':'·'}</div><div class="views-l">${k.posted?'รอข้อมูลยอดวิว':'ยังไม่โพสต์'}</div>`;
     return `<div class="kol">
       <div class="kol-top">
