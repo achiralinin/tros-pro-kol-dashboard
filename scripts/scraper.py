@@ -88,40 +88,25 @@ KOL_LINKS = {
 KOL_LINKS["wecanchoose"]={"url":"https://www.facebook.com/wecanchoose/posts/1574463894474621","platform":"Facebook"}
 MANUAL_OVERRIDE["wecanchoose"]={"views":4460483,"likes":0,"shares":0,"comments":0,"saves":0,"followers":3000000}
 
-def yt(url, extra=None, timeout=60):
-    cmd = ['yt-dlp','--dump-json','--no-download','--no-warnings']
-    if extra: cmd += extra
-    cmd += [url]
-    return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+import re, urllib.request
+UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
 
+def _n(html,key):
+    m=re.search(key+r'"?\s*:\s*"?(\d+)',html)
+    return int(m.group(1)) if m else 0
 
 def scrape(url, platform):
     try:
-        r = yt(url)
-        if r.returncode != 0:
-            # retry age-gate for TikTok
-            r = yt(url, ['--age-limit','99'])
-            if r.returncode != 0:
-                print(f"    yt-dlp error: {r.stderr.strip()[:160]}")
-                return None
-        info = json.loads(r.stdout)
-        return {
-            'url': info.get('webpage_url', url),
-            'platform': platform,
-            'views': info.get('view_count', 0) or 0,
-            'likes': info.get('like_count', 0) or 0,
-            'shares': info.get('repost_count', 0) or 0,
-            'comments': info.get('comment_count', 0) or 0,
-            'saves': (info.get('save_count') or info.get('collect_count')
-                      or info.get('favorite_count') or info.get('bookmark_count') or 0),
-            'followers': info.get('channel_follower_count', 0) or 0,
-        }
-    except subprocess.TimeoutExpired:
-        print(f"    Timeout: {url}"); return None
-    except json.JSONDecodeError:
-        print(f"    JSON parse error: {url}"); return None
+        req=urllib.request.Request(url,headers={"User-Agent":UA,"Accept-Language":"en-US,en;q=0.9"})
+        html=urllib.request.urlopen(req,timeout=30).read().decode("utf-8","ignore")
     except Exception as e:
-        print(f"    Error: {e}"); return None
+        print("    fetch error:",str(e)[:140]); return None
+    if "playCount" not in html:
+        print("    no data (blocked?) len",len(html)); return None
+    return {"url":url,"platform":platform,"views":_n(html,"playCount"),
+            "likes":_n(html,"diggCount"),"comments":_n(html,"commentCount"),
+            "shares":_n(html,"shareCount"),"saves":_n(html,"collectCount"),
+            "followers":_n(html,"followerCount")}
 
 
 def main():
