@@ -85,6 +85,9 @@ KOL_LINKS = {
 }
 
 
+KOL_LINKS["wecanchoose"]={"url":"https://www.facebook.com/wecanchoose/posts/1574463894474621","platform":"Facebook"}
+MANUAL_OVERRIDE["wecanchoose"]={"views":4460483,"likes":0,"shares":0,"comments":0,"saves":0,"followers":3000000}
+
 def yt(url, extra=None, timeout=60):
     cmd = ['yt-dlp','--dump-json','--no-download','--no-warnings']
     if extra: cmd += extra

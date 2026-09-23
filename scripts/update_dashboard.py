@@ -213,6 +213,9 @@ KOL_LINKS = {
 NOT_POSTED = set(["wecanchoose"])
 
 
+KOL_LINKS["wecanchoose"]="https://www.facebook.com/wecanchoose/posts/1574463894474621"
+NOT_POSTED.discard("wecanchoose")
+
 def js(s):
     if s is None: return ''
     return str(s).replace('\\','\\\\').replace("'","\\'").replace('\n',' ').replace('\r',' ')
