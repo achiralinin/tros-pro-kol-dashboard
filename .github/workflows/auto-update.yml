@@ -2,7 +2,7 @@ name: Auto Update TROS PRO Dashboard
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '9,39 * * * *'
   workflow_dispatch:
     inputs:
       platform:
